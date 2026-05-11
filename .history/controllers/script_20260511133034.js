@@ -45,63 +45,93 @@ async function getOrCreateFeedOrder(groupId, script_feed) {
     }
     return order[groupId];
 }
+// 更新后的 26 个 Token 顺序
 const FEED_ORDER_TOKENS = [
-    "T30",
-    "T2",
-    "T15",
-    "T21",
-    "T4",
-    "T8",
-    "T29",
-    "T13",
-    "T11",
-    "T3",
-    "T14",
-    "T20",
-    "T5",
-    "T27",
-    "T26",
-    "T19",
-    "T18",
-    "T28",
-    "T17",
-    "T1",
-    "T10",
-    "T7",
-    "T9",
-    "T6",
-    "T24",
-    "T22",
-    "T12",
-    "T25",
-    "T16",
-    "T23"
+    "T30", "T2", "T15", "T21", "T4", "T8", "T29", "T13", "T11", "T3", 
+    "T14", "T20", "T5", "T27", "T26", "T19", "T28", "T17", "T1", "T10", 
+    "T7", "T9", "T22", "T12", "T16", "T23"
 ];
 
 const AI_TOPICS_BY_PCT = {
     "0": [],
-    "10": [18, 3, 27],
-    "40": [18, 3, 27, 9, 1, 22, 14, 6, 30, 11, 25, 4],
-    "80": [18, 3, 27, 9, 1, 22, 14, 6, 30, 11, 25, 4, 19, 8, 2, 24, 13, 29, 7, 16, 10, 21, 5, 28]
+    "10": [13, 27, 4],
+    "40": [13, 27, 4, 22, 1, 16, 30, 9, 20, 11],
+    "80": [13, 27, 4, 22, 1, 16, 30, 9, 20, 11, 5, 28, 2, 23, 17, 8, 14, 26, 21, 7, 19]
 };
 async function getImageClassScripts(scriptIMG) {
-    const allowedPlatforms = ["con-ai", "con-real", "lib-ai", "lib-real"];
+    if (!scriptIMG) {
+        throw new Error("IMG is required.");
+    }
 
-    if (!allowedPlatforms.includes(scriptIMG)) {
+    let isCon = scriptIMG.includes("con");
+    let isLib = scriptIMG.includes("lib");
+    let isAI = scriptIMG.includes("ai");
+    let isReal = scriptIMG.includes("real");
+
+    if ((!isCon && !isLib) || (!isAI && !isReal)) {
         throw new Error("Invalid IMG value.");
     }
 
-    const scripts = await Script.find({ platform: scriptIMG })
-        .sort({ topic: 1 })
-        .populate("actor")
-        .populate({
-            path: "comments.actor",
-            model: "Actor",
-            options: { strictPopulate: false }
+    let mappedClass;
+    if (isCon && isAI) mappedClass = "cAI";
+    else if (isCon && isReal) mappedClass = "creal";
+    else if (isLib && isAI) mappedClass = "lAI";
+    else if (isLib && isReal) mappedClass = "lreal";
+    else throw new Error("Invalid IMG combination.");
+
+    const topicNums = Array.from({ length: 30 }, (_, i) => i + 1);
+
+    const scripts = await Promise.all(
+        topicNums.map(async (topicNum) => {
+            const pictureName = isCon
+                ? `${topicNum * 2 - 1}.jpg`
+                : `${topicNum * 2}.jpg`;
+
+            const script = await Script.findOne({
+                class: mappedClass,
+                picture: pictureName
+            })
+                .populate("actor")
+                .populate({
+                    path: "comments.actor",
+                    model: "Actor",
+                    options: { strictPopulate: false }
+                })
+                .exec();
+
+            return script;
         })
-        .exec();
+    );
+
+    const missingTopics = topicNums.filter((_, i) => !scripts[i]);
+    if (missingTopics.length > 0) {
+        throw new Error(
+            `Missing scripts for ${scriptIMG}. Missing topics: ${missingTopics.join(", ")}`
+        );
+    }
 
     return scripts;
+}
+function mapIMGToClass(scriptIMG) {
+    const mapping = {
+        "con-ai": "cAI",
+        "con-real": "creal",
+        "lib-ai": "lAI",
+        "lib-real": "lreal"
+    };
+
+    return mapping[scriptIMG];
+}
+function getPictureNameForIMG(scriptIMG, topicNum) {
+    if (scriptIMG.startsWith("con-")) {
+        return `${topicNum * 2 - 1}.jpg`;
+    }
+
+    if (scriptIMG.startsWith("lib-")) {
+        return `${topicNum * 2}.jpg`;
+    }
+
+    throw new Error("Invalid IMG prefix.");
 }
 async function getTopicScripts(topic) {
     const topicNum = Number(topic);
@@ -353,39 +383,16 @@ exports.getScriptFeed = async (req, res, next) => {
                 });
             }
             else if (scriptIMG) {
-                const allowedPlatforms = ["con-ai", "con-real", "lib-ai", "lib-real"];
+    const script_feed = await getImageClassScripts(scriptIMG);
 
-                if (!allowedPlatforms.includes(scriptIMG)) {
-                    return res.status(400).send("Invalid IMG value.");
-                }
+    await user.save();
 
-                const script_feed = await getImageClassScripts(scriptIMG);
-
-                if (!script_feed || script_feed.length === 0) {
-                    return res.status(404).send("No scripts found for this IMG class.");
-                }
-
-                let user_posts = user.getPostInPeriod(0, time_diff);
-                user_posts.sort((a, b) => b.relativeTime - a.relativeTime);
-
-                const finalfeed = helpers.getFeed(
-                    user_posts,
-                    script_feed,
-                    user,
-                    process.env.FEED_ORDER,
-                    true,
-                    true
-                );
-
-                await user.save();
-
-                return res.render("script", {
-                    script: finalfeed,
-                    script_type: `IMG_${scriptIMG}`,
-                    user: user
-                });
-            }
-
+    return res.render("script", {
+        script: script_feed,
+        script_type: `IMG_${scriptIMG}`,
+        user: user
+    });
+}
             return res.status(400).send("Invalid POL or PCT condition.");
         });
     } catch (err) {
