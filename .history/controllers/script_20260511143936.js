@@ -249,25 +249,7 @@ exports.getScriptFeed = async (req, res, next) => {
         if (!scriptUID) {
             return res.status(400).send("Prolific ID is required");
         }
-        const conMapping = {
-            "1": { pol: "lib", pct: "0"  },
-            "2": { pol: "lib", pct: "10" },
-            "3": { pol: "lib", pct: "40" },
-            "4": { pol: "lib", pct: "80" },
-            "5": { pol: "con", pct: "0"  },
-            "6": { pol: "con", pct: "10" },
-            "7": { pol: "con", pct: "40" },
-            "8": { pol: "con", pct: "80" }
-        };
 
-        let scriptPOL, scriptPCT;
-
-        // 如果传入了 CON，则解析它
-        if (scriptCON && conMapping[scriptCON]) {
-            scriptPOL = conMapping[scriptCON].pol;
-            scriptPCT = conMapping[scriptCON].pct;
-        }
-        
         let existingUser = await User.findOne({ prolificID: scriptUID }).exec();
         console.log("Existing User:", existingUser);
 
