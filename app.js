@@ -269,7 +269,7 @@ app.get('/test', passportConfig.isAuthenticated, function(req, res) {
 
 // Chenchen's note : get: show postshere  ; post record user interaction
 app.get('/newsfeed/condition/', scriptController.getScriptFeed);
-//app.post('/newsfeed/condition/', scriptController.postUpdateFeedActionNoLOGIN);
+app.post('/newsfeed/condition/', scriptController.postUpdateFeedActionNoLOGIN);
 
 /**
  * Error Handler.

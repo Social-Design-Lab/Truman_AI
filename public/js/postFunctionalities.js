@@ -16,6 +16,26 @@ function setCount(btn, newCount) {
     if (node) node.nodeValue = ` ${newCount}`;
 }
 
+function withCsrf(payload) {
+    const csrfToken = $('meta[name="csrf-token"]').attr('content');
+    if (csrfToken) {
+        return { ...payload, _csrf: csrfToken };
+    }
+    return payload;
+}
+
+function getActorFeedActionUrl() {
+    const path = window.location.pathname.replace(/\/+$/, '');
+    if (path === "/newsfeed/condition") {
+        return `${window.location.pathname}${window.location.search}`;
+    }
+    return "/feed";
+}
+
+function postActorFeedAction(payload) {
+    return $.post(getActorFeedActionUrl(), withCsrf(payload));
+}
+
 function toggleReaction(e, reactionType) {
     const btn = $(e.target).closest(`.ui.${reactionType}.button`);
     const card = btn.closest(".ui.fluid.card");
@@ -23,9 +43,7 @@ function toggleReaction(e, reactionType) {
     const postID = card.attr("postID");
     const postClass = card.attr("postClass");
     const currDate = Date.now();
-    const csrfToken = $('meta[name="csrf-token"]').attr('content');
 
-    // ✅ like / dislike 都用 red
     const activeClass = "red";
     const oppositeType = reactionType === "like" ? "dislike" : "like";
     const oppositeBtn = card.find(`.ui.${oppositeType}.button`);
@@ -35,13 +53,12 @@ function toggleReaction(e, reactionType) {
 
     function postToServer(payload) {
         if (card.attr("type") === "userPost") {
-            $.post("/userPost_feed", { postID, _csrf: csrfToken, ...payload });
+            $.post("/userPost_feed", withCsrf({ postID, ...payload }));
         } else {
-            $.post("/feed", { postID, postClass, _csrf: csrfToken, ...payload });
+            postActorFeedAction({ postID, postClass, ...payload });
         }
     }
 
-    // ✅ 再点一次：取消 reaction
     if (isActive) {
         btn.removeClass(activeClass);
         currentCount -= 1;
@@ -51,7 +68,6 @@ function toggleReaction(e, reactionType) {
         return;
     }
 
-    // ✅ 互斥：如果另一边已经点亮，就取消它
     if (oppositeBtn.length && oppositeBtn.hasClass(activeClass)) {
         oppositeBtn.removeClass(activeClass);
         let { count: oppositeCount } = getCount(oppositeBtn);
@@ -61,7 +77,6 @@ function toggleReaction(e, reactionType) {
         postToServer({ [`un${oppositeType}`]: currDate });
     }
 
-    // ✅ 开启当前 reaction
     btn.addClass(activeClass);
     currentCount += 1;
     setCount(btn, currentCount);
@@ -75,7 +90,6 @@ function likePost(e) {
     const postID = target.closest(".ui.fluid.card").attr("postID");
     const postClass = target.closest(".ui.fluid.card").attr("postClass");
     const currDate = Date.now();
-    const csrfToken = $('meta[name="csrf-token"]').attr('content');
     console.log("test to see like inform: ", target);
     // Extract the current like count from the text node inside the button
     const likeTextNode = target.contents().filter(function() {
@@ -91,17 +105,15 @@ function likePost(e) {
         likeTextNode.nodeValue = ` ${currentLikes}`;
 
         if (target.closest(".ui.fluid.card").attr("type") == 'userPost') {
-            $.post("/userPost_feed", {
+            $.post("/userPost_feed", withCsrf({
                 postID: postID,
-                unlike: currDate,
-                _csrf: csrfToken
-            });
+                unlike: currDate
+            }));
         } else {
-            $.post("/feed", {
+            postActorFeedAction({
                 postID: postID,
                 unlike: currDate,
-                postClass: postClass,
-                _csrf: csrfToken
+                postClass: postClass
             });
         }
     } else { // Like Post
@@ -110,17 +122,15 @@ function likePost(e) {
         likeTextNode.nodeValue = ` ${currentLikes}`;
 
         if (target.closest(".ui.fluid.card").attr("type") == 'userPost') {
-            $.post("/userPost_feed", {
+            $.post("/userPost_feed", withCsrf({
                 postID: postID,
-                like: currDate,
-                _csrf: csrfToken
-            });
+                like: currDate
+            }));
         } else {
-            $.post("/feed", {
+            postActorFeedAction({
                 postID: postID,
                 like: currDate,
-                postClass: postClass,
-                _csrf: csrfToken
+                postClass: postClass
             });
         }
     }
@@ -137,11 +147,10 @@ function flagPost(e) {
         const postClass = post.attr("postClass");
         const share = Date.now();
 
-        $.post("/feed", {
+        postActorFeedAction({
             postID: postID,
             share: share,
-            postClass: postClass,
-            _csrf: $('meta[name="csrf-token"]').attr('content')
+            postClass: postClass
         });
 
         const card = $(`.ui.fluid.card[postID='${postID}']`);
@@ -179,11 +188,10 @@ function flagPost(e) {
         const postClass = post.attr("postClass");
         const unshare = Date.now();
 
-        $.post("/feed", {
+        postActorFeedAction({
             postID: postID,
             unshare: unshare,
-            postClass: postClass,
-            _csrf: $('meta[name="csrf-token"]').attr('content')
+            postClass: postClass
         });
 
         const card = $(`.ui.fluid.card[postID='${postID}']`);
@@ -238,21 +246,19 @@ function likeComment(e) {
         label.html(function(i, val) { return val * 1 - 1 });
 
         if (target.closest(".ui.fluid.card").attr("type") == 'userPost') {
-            $.post("/userPost_feed", {
+            $.post("/userPost_feed", withCsrf({
                 postID: postID,
                 commentID: commentID,
                 unlike: currDate,
-                isUserComment: isUserComment,
-                _csrf: $('meta[name="csrf-token"]').attr('content')
-            });
+                isUserComment: isUserComment
+            }));
         } else {
-            $.post("/feed", {
+            postActorFeedAction({
                 postID: postID,
                 commentID: commentID,
                 unlike: currDate,
                 isUserComment: isUserComment,
-                postClass: postClass,
-                _csrf: $('meta[name="csrf-token"]').attr('content')
+                postClass: postClass
             });
         }
     } else { //Like comment
@@ -262,21 +268,19 @@ function likeComment(e) {
         label.html(function(i, val) { return val * 1 + 1 });
 
         if (target.closest(".ui.fluid.card").attr("type") == 'userPost')
-            $.post("/userPost_feed", {
+            $.post("/userPost_feed", withCsrf({
                 postID: postID,
                 commentID: commentID,
                 like: currDate,
-                isUserComment: isUserComment,
-                _csrf: $('meta[name="csrf-token"]').attr('content')
-            });
+                isUserComment: isUserComment
+            }));
         else
-            $.post("/feed", {
+            postActorFeedAction({
                 postID: postID,
                 commentID: commentID,
                 like: currDate,
                 isUserComment: isUserComment,
-                postClass: postClass,
-                _csrf: $('meta[name="csrf-token"]').attr('content')
+                postClass: postClass
             });
     }
 }
@@ -298,12 +302,11 @@ function flagComment(e) {
     if (target.closest(".ui.fluid.card").attr("type") == 'userPost')
         console.log("Should never be here.")
     else
-        $.post("/feed", {
+        postActorFeedAction({
             postID: postID,
             commentID: commentID,
             flag: flag,
-            postClass: postClass,
-            _csrf: $('meta[name="csrf-token"]').attr('content')
+            postClass: postClass
         });
 }
 
@@ -351,21 +354,19 @@ function addComment(e) {
         updateCommentCount(postID, newCommentCount);
 
         if (card.attr("type") == 'userPost')
-            $.post("/userPost_feed", {
+            $.post("/userPost_feed", withCsrf({
                 postID: postID,
                 new_comment: currDate,
-                comment_text: text,
-                _csrf: $('meta[name="csrf-token"]').attr('content')
-            }).then(function(json) {
+                comment_text: text
+            })).then(function(json) {
                 numComments = json.numComments;
             });
         else
-            $.post("/feed", {
+            postActorFeedAction({
                 postID: postID,
                 new_comment: currDate,
                 comment_text: text,
-                postClass: postClass,
-                _csrf: $('meta[name="csrf-token"]').attr('content')
+                postClass: postClass
             }).then(function(json) {
                 numComments = json.numComments;
             });
@@ -465,88 +466,159 @@ $(window).on('load', () => {
     //Follow button
     $('.ui.basic.primary.follow.button').on('click', followUser);
 
-    // Track how long a post is on the screen (borders are defined by image)
-    // Start time: When the entire photo is visible in the viewport.
-    // End time: When the entire photo is no longer visible in the viewport.
-    $('.ui.fluid.card .img.post').visibility({
-        once: false,
-        continuous: false,
-        observeChanges: true,
-        //throttle:100,
-        initialCheck: true,
-        offset: 50,
+    const viewStates = new Map();
+    let viewCheckQueued = false;
 
-        //Handling scrolling down like normal
-        //Called when bottomVisible turns true (bottom of a picture is visible): bottom can enter from top or bottom of viewport
-        onBottomVisible: function(element) {
-            var startTime = parseInt($(this).siblings(".content").children(".myTimer").text());
-            // Bottom of picture enters from bottom (scrolling down the feed; as normal)
-            if (element.topVisible) { // Scrolling Down AND entire post is visible on the viewport 
-                // If this is the first time bottom is visible
-                if (startTime == 0) {
-                    var startTime = Date.now();
+    function imageFullyVisible(imageWrapper) {
+        const rect = imageWrapper.getBoundingClientRect();
+        return rect.height > 0 &&
+            rect.width > 0 &&
+            rect.top >= 0 &&
+            rect.left >= 0 &&
+            rect.bottom <= window.innerHeight &&
+            rect.right <= window.innerWidth;
+    }
+
+    function updateReadTimeDebug(card, message, totalViewTime, status) {
+        const debugBox = card.find(".readtime-debug").first();
+        if (!debugBox.length) return;
+
+        debugBox.find(".readtime-status").text(message);
+        if (totalViewTime === undefined) return;
+
+        const values = debugBox.find(".readtime-values");
+        const key = status === "confirmed" ? "data-confirmed-read-times" : "data-pending-read-times";
+        let readTimes = [];
+        try {
+            readTimes = JSON.parse(values.attr(key) || "[]");
+        } catch (err) {
+            readTimes = [];
+        }
+        readTimes.push(Math.round(totalViewTime));
+        values.attr(key, JSON.stringify(readTimes));
+
+        const stored = JSON.parse(values.attr("data-read-times") || "[]");
+        const confirmed = JSON.parse(values.attr("data-confirmed-read-times") || "[]");
+        const pending = JSON.parse(values.attr("data-pending-read-times") || "[]");
+        const parts = [
+            `Stored on refresh: ${stored.length ? stored.join(", ") + " ms" : "none yet"}`
+        ];
+        if (confirmed.length) parts.push(`Saved this page: ${confirmed.join(", ")} ms`);
+        if (pending.length) parts.push(`Sent, confirm after refresh: ${pending.join(", ")} ms`);
+        values.text(parts.join(" | "));
+    }
+
+    function sendViewedTime(card, totalViewTime, useBeacon) {
+        if (totalViewTime <= 1500 || totalViewTime >= 86400000) {
+            updateReadTimeDebug(card, `Ignored ${Math.round(totalViewTime)} ms (outside save threshold)`);
+            return;
+        }
+
+        updateReadTimeDebug(card, `Sending ${Math.round(totalViewTime)} ms`);
+
+        const payload = withCsrf({
+            postID: card.attr("postID"),
+            viewed: Math.round(totalViewTime),
+            postClass: card.attr("postClass")
+        });
+
+        if (useBeacon) {
+            const body = new URLSearchParams(payload);
+            const requestBody = body.toString();
+            const contentType = "application/x-www-form-urlencoded;charset=UTF-8";
+
+            if (navigator.sendBeacon) {
+                const sent = navigator.sendBeacon(
+                    getActorFeedActionUrl(),
+                    new Blob([requestBody], { type: contentType })
+                );
+                if (sent) {
+                    updateReadTimeDebug(card, `Sent ${Math.round(totalViewTime)} ms with sendBeacon; refresh to confirm`, totalViewTime, "pending");
+                    return;
                 }
-            } else { //Scrolling up and this event does not matter, since entire photo isn't visible anyways.
-                var startTime = 0;
             }
-            $(this).siblings(".content").children(".myTimer").text(startTime);
-        },
 
-        //Element's bottom edge has passed top of the screen (disappearing); happens only when Scrolling Up
-        onBottomPassed: function(element) {
-            var endTime = Date.now();
-            var startTime = parseInt($(this).siblings(".content").children(".myTimer").text());
-            var totalViewTime = endTime - startTime; //TOTAL TIME HERE
-
-            var parent = $(this).parents(".ui.fluid.card");
-            var postID = parent.attr("postID");
-            var postClass = parent.attr("postClass");
-            // If user viewed it for less than 24 hours, but more than 1.5 seconds (just in case)
-            if (totalViewTime < 86400000 && totalViewTime > 1500 && startTime > 0) {
-                $.post("/feed", {
-                    postID: postID,
-                    viewed: totalViewTime,
-                    postClass: postClass,
-                    _csrf: $('meta[name="csrf-token"]').attr('content')
+            if (window.fetch) {
+                fetch(getActorFeedActionUrl(), {
+                    method: "POST",
+                    headers: { "Content-Type": contentType },
+                    body: requestBody,
+                    keepalive: true,
+                    credentials: "same-origin"
                 });
-                // Reset Timer
-                $(this).siblings(".content").children(".myTimer").text(0);
-            }
-        },
-
-        //Handling scrolling up
-        //Element's top edge has passed top of the screen (appearing); happens only when Scrolling Up
-        onTopPassedReverse: function(element) {
-            var startTime = parseInt($(this).siblings(".content").children(".myTimer").text());
-            if (element.bottomVisible && startTime == 0) { // Scrolling Up AND entire post is visible on the viewport 
-                var startTime = Date.now();
-                $(this).siblings(".content").children(".myTimer").text(startTime);
-            }
-        },
-
-        // Called when topVisible turns false (exits from top or bottom)
-        onTopVisibleReverse: function(element) {
-            if (element.topPassed) { //Scrolling Down, disappears on top; this event doesn't matter (since it is when bottom disappears that time is stopped)
-            } else { // False when Scrolling Up (the bottom of photo exits screen.)
-                var endTime = Date.now();
-                var startTime = parseInt($(this).siblings(".content").children(".myTimer").text());
-                var totalViewTime = endTime - startTime;
-
-                var parent = $(this).parents(".ui.fluid.card");
-                var postID = parent.attr("postID");
-                var postClass = parent.attr("postClass");
-                // If user viewed it for less than 24 hours, but more than 1.5 seconds (just in case)
-                if (totalViewTime < 86400000 && totalViewTime > 1500 && startTime > 0) {
-                    $.post("/feed", {
-                        postID: postID,
-                        viewed: totalViewTime,
-                        postClass: postClass,
-                        _csrf: $('meta[name="csrf-token"]').attr('content')
-                    });
-                    // Reset Timer
-                    $(this).siblings(".content").children(".myTimer").text(0);
-                }
+                updateReadTimeDebug(card, `Sent ${Math.round(totalViewTime)} ms with fetch keepalive; refresh to confirm`, totalViewTime, "pending");
+                return;
             }
         }
+
+        postActorFeedAction(payload)
+            .done(function() {
+                updateReadTimeDebug(card, `Saved ${Math.round(totalViewTime)} ms`, totalViewTime, "confirmed");
+            })
+            .fail(function(xhr, textStatus) {
+                const detail = xhr && xhr.status ? `${xhr.status} ${xhr.responseText || textStatus}` : textStatus;
+                updateReadTimeDebug(card, `Failed to save ${Math.round(totalViewTime)} ms (${detail})`);
+            });
+    }
+
+    function stopPostTimer(imageWrapper, useBeacon) {
+        const state = viewStates.get(imageWrapper);
+        if (!state || !state.startTime) return;
+
+        const totalViewTime = Date.now() - state.startTime;
+        state.startTime = 0;
+        $(imageWrapper).siblings(".content").children(".myTimer").text(0);
+        sendViewedTime($(imageWrapper).parents(".ui.fluid.card"), totalViewTime, useBeacon);
+    }
+
+    function updatePostViewTimers() {
+        viewCheckQueued = false;
+        $('.ui.fluid.card .img.post').each(function() {
+            const visible = document.visibilityState === "visible" && imageFullyVisible(this);
+            let state = viewStates.get(this);
+
+            if (!state) {
+                state = { startTime: 0 };
+                viewStates.set(this, state);
+            }
+
+            if (visible && !state.startTime) {
+                state.startTime = Date.now();
+                $(this).siblings(".content").children(".myTimer").text(state.startTime);
+                updateReadTimeDebug($(this).parents(".ui.fluid.card"), "Timer started");
+            } else if (!visible && state.startTime) {
+                stopPostTimer(this, false);
+            }
+        });
+    }
+
+    function queuePostViewCheck() {
+        if (viewCheckQueued) return;
+        viewCheckQueued = true;
+        window.requestAnimationFrame(updatePostViewTimers);
+    }
+
+    function flushPostViewTimers(useBeacon) {
+        $('.ui.fluid.card .img.post').each(function() {
+            stopPostTimer(this, useBeacon);
+        });
+    }
+
+    queuePostViewCheck();
+    $(window).on('scroll resize', queuePostViewCheck);
+    $(window).on('focus pageshow', queuePostViewCheck);
+    $(window).on('blur', function() {
+        flushPostViewTimers(true);
+    });
+    document.addEventListener('visibilitychange', function() {
+        if (document.visibilityState === "hidden") {
+            flushPostViewTimers(true);
+        } else {
+            queuePostViewCheck();
+        }
+    });
+    window.addEventListener('pageshow', queuePostViewCheck);
+    window.addEventListener('pagehide', function() {
+        flushPostViewTimers(true);
     });
 });

@@ -12,6 +12,13 @@
   .content
     .description=val.body
     .myTimer.hidden 0
+    if debugReadTime
+      - const readTimes = Array.isArray(val.readTime) ? val.readTime : []
+      .ui.tiny.message.readtime-debug
+        .header ReadTime debug
+        .readtime-status Waiting for a full-image view...
+        .readtime-values(data-read-times=JSON.stringify(readTimes), data-confirmed-read-times='[]', data-pending-read-times='[]')
+          | Stored on refresh: #{readTimes.length ? readTimes.join(', ') + ' ms' : 'none yet'}
   .ui.bottom.four.attached.icon.buttons
     .ui.labeled.button(tabindex='0')
       .ui.like.button(class=val.like ? "red" : null)
@@ -24,7 +31,7 @@
     .ui.reply.button(tabindex='0')
       i.comment.icon
       |  #{val.comments.length}
-    .ui.flag.button(tabindex='0')(class=val.share ? "red" : null)
+    .ui.flag.button(tabindex='0', class=val.share ? "red" : null)
       i.retweet.icon
       |  #{val.shares}
   if val.comments.length > 0

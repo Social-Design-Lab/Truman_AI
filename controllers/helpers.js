@@ -126,6 +126,8 @@ exports.getFeed = function(user_posts, script_feed, user, order, removeFlaggedCo
                     script_feed[0].share = true;
                     script_feed[0].shares++;
                 }
+                script_feed[0].readTime = user.feedAction[feedIndex].readTime || [];
+                script_feed[0].rereadTimes = user.feedAction[feedIndex].rereadTimes || 0;
                 // Check if this post has been flagged by the user: If true and removeFlaggedContent is true, remove the post.
                if (user.blocked.includes(script_feed[0].actor.username & removedBlockedUserContent)) {
                     script_feed.splice(0, 1);

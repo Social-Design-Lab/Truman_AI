@@ -364,6 +364,7 @@ exports.getScriptFeed = async (req, res, next) => {
                 return res.render("script", {
                     script: finalfeed,
                     script_type: `${scriptPOL}_${scriptPCT}`,
+                    debugReadTime: req.query.debug === "true",
                     user: user
                 });
             }
@@ -432,9 +433,13 @@ exports.postUpdateFeedActionNoLOGIN = async (req, res, next) => {
         // Find the user by prolificID
         const user = await User.findOne({ prolificID: prolificID }).exec();
         console.log('User found:', user); // Debugging: log the user
-        console.log(user);
+        if (!user) {
+            return res.status(404).send('User not found for this UID');
+        }
         // Check if user has interacted with the post before.
-        let feedIndex = _.findIndex(user.feedAction, function (o) { return o.post == req.body.postID; });
+        let feedIndex = _.findIndex(user.feedAction, function (o) {
+            return o.post && String(o.post) === String(req.body.postID);
+        });
 
         // If the user has not interacted with the post before, add the post to user.feedAction.
         if (feedIndex == -1) {
@@ -505,8 +510,22 @@ exports.postUpdateFeedActionNoLOGIN = async (req, res, next) => {
         }
         // User interacted with the post.
         else {
+            // User shared the post.
+            if (req.body.share) {
+                const share = req.body.share;
+                user.feedAction[feedIndex].shareTime.push(share);
+                user.feedAction[feedIndex].shared = true;
+                user.numPostShared++;
+            }
+            // User unshared the post.
+            else if (req.body.unshare) {
+                const unshare = req.body.unshare;
+                user.feedAction[feedIndex].unshareTime.push(unshare);
+                user.feedAction[feedIndex].shared = false;
+                user.numPostShared--;
+            }
             // User flagged the post.
-            if (req.body.flag) {
+            else if (req.body.flag) {
                 const flag = req.body.flag;
                 user.feedAction[feedIndex].flagTime = [flag];
                 user.feedAction[feedIndex].flagged = true;
@@ -545,10 +564,12 @@ exports.postUpdateFeedActionNoLOGIN = async (req, res, next) => {
             }
             // User read the post.
             else if (req.body.viewed) {
-                const view = req.body.viewed;
-                user.feedAction[feedIndex].readTime.push(view);
-                user.feedAction[feedIndex].rereadTimes++;
-                user.feedAction[feedIndex].mostRecentTime = Date.now();
+                const view = Number(req.body.viewed);
+                if (Number.isFinite(view) && view < 86400000 && view > 1500) {
+                    user.feedAction[feedIndex].readTime.push(Math.round(view));
+                    user.feedAction[feedIndex].rereadTimes++;
+                    user.feedAction[feedIndex].mostRecentTime = Date.now();
+                }
             } else {
                 console.log('Something in feedAction went crazy. You should never see this.');
             }
@@ -682,7 +703,9 @@ exports.postUpdateFeedAction = async (req, res, next) => {
     try {
         const user = await User.findById(req.user.id).exec();
         // Check if user has interacted with the post before.
-        let feedIndex = _.findIndex(user.feedAction, function (o) { return o.post == req.body.postID; });
+        let feedIndex = _.findIndex(user.feedAction, function (o) {
+            return o.post && String(o.post) === String(req.body.postID);
+        });
 
         // If the user has not interacted with the post before, add the post to user.feedAction.
         if (feedIndex == -1) {
@@ -756,14 +779,14 @@ exports.postUpdateFeedAction = async (req, res, next) => {
             // User flagged the post.
             if (req.body.share) {
                 const share = req.body.share;
-                user.feedAction[feedIndex].shareTime = [share];
+                user.feedAction[feedIndex].shareTime.push(share);
                 user.feedAction[feedIndex].shared = true;
                 user.numPostShared++;
             }
             // if user undo the share 
             else if (req.body.unshare) {
                 const unshare = req.body.unshare;
-                user.feedAction[feedIndex].unshareTime = [unshare];
+                user.feedAction[feedIndex].unshareTime.push(unshare);
                 user.feedAction[feedIndex].shared = false;
                 user.numPostShared--;
             }
@@ -797,10 +820,12 @@ exports.postUpdateFeedAction = async (req, res, next) => {
             }
             // User read the post.
             else if (req.body.viewed) {
-                const view = req.body.viewed;
-                user.feedAction[feedIndex].readTime.push(view);
-                user.feedAction[feedIndex].rereadTimes++;
-                user.feedAction[feedIndex].mostRecentTime = Date.now();
+                const view = Number(req.body.viewed);
+                if (Number.isFinite(view) && view < 86400000 && view > 1500) {
+                    user.feedAction[feedIndex].readTime.push(Math.round(view));
+                    user.feedAction[feedIndex].rereadTimes++;
+                    user.feedAction[feedIndex].mostRecentTime = Date.now();
+                }
             } else {
                 console.log('Something in feedAction went crazy. You should never see this.');
             }
