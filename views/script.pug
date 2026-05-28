@@ -61,6 +61,7 @@ block scripts
       const queryString = window.location.search;
       const urlParams = new URLSearchParams(queryString);
       const uid = urlParams.get('UID');
+      const cond = urlParams.get('COND');
       
       // Function to enable the button
       const enableButton = () => {
@@ -74,7 +75,12 @@ block scripts
       // Add click event listener
       button.addEventListener('click', function() {
         if (!button.disabled) {
-          window.location.href = "https://uconn.co1.qualtrics.com/jfe/form/SV_b7xyIC2Tlchm6IS?prolificID=" + uid;
+          const surveyUrl = new URL("https://uconn.co1.qualtrics.com/jfe/form/SV_b7xyIC2Tlchm6IS");
+          surveyUrl.searchParams.set("prolificID", uid || "");
+          if (cond) {
+            surveyUrl.searchParams.set("cond", cond);
+          }
+          window.location.href = surveyUrl.toString();
         }
       });
     });
