@@ -1,0 +1,121 @@
+MongoScriptId,PostID,StoredPicture,ImageName,Body,Class,Condition,ImageSource,ActorUsername,ActorName,TimeMilliseconds,Likes,Dislikes,Shares,NumComments
+69f563d4d36d0896cb1286c1,0,1.jpg,t01con-real,guns in America...,creal,con,real,_aikira_,Aikira Walker,-74100000,0,0,0,0
+69f563cfd36d0896cb12860d,0,2.jpg,t01lib-real,guns in America...,lreal,lib,real,_aikira_,Aikira Walker,-74100000,0,0,0,0
+69f563d4d36d0896cb1286c4,1,3.jpg,t02con-real,#guns #safety,creal,con,real,ancho-n-cayenne,Yalonda Carter,-40380000,0,0,0,0
+69f563d0d36d0896cb128610,1,4.jpg,t02lib-real,#guns #safety,lreal,lib,real,ancho-n-cayenne,Yalonda Carter,-40380000,0,0,0,0
+69f563d5d36d0896cb1286c7,2,5.jpg,t04con-real,#abortion #protest has taken place across the country,creal,con,real,artisanalways,Riya,2700000,0,0,0,0
+69f563d0d36d0896cb128613,2,6.jpg,t04lib-real,#abortion #protest has taken place across the country,lreal,lib,real,artisanalways,Riya,2700000,0,0,0,0
+69f563d5d36d0896cb1286ca,3,7.jpg,t05con-real,Is #abortion about #bodyautonomy OR #sanctityoflife?,creal,con,real,Ataylor,Ataylor,-350160000,0,0,0,0
+69f563d0d36d0896cb128616,3,8.jpg,t05lib-real,Is #abortion about #bodyautonomy OR #sanctityoflife?,lreal,lib,real,Ataylor,Ataylor,-350160000,0,0,0,0
+69f563d5d36d0896cb1286cd,4,9.jpg,t06con-real,Immigration at the Border,creal,con,real,ayoitsayo,Maui Ayo,-334800000,0,0,0,0
+69f563d0d36d0896cb128619,4,10.jpg,t06lib-real,Immigration at the Border,lreal,lib,real,ayoitsayo,Maui Ayo,-334800000,0,0,0,0
+69f563d5d36d0896cb1286d0,5,11.jpg,t07con-real,Immigration and Customs Enforcement #ICE at Work,creal,con,real,B.Mike,Mike B.,-273840000,0,0,0,0
+69f563d0d36d0896cb12861c,5,12.jpg,t07lib-real,Immigration and Customs Enforcement #ICE at Work,lreal,lib,real,B.Mike,Mike B.,-273840000,0,0,0,0
+69f563d5d36d0896cb1286d3,6,13.jpg,t08con-real,#energyoptions #policy #politics,creal,con,real,bblueberryy,Emma Hanson,-263820000,0,0,0,0
+69f563d0d36d0896cb12861f,6,14.jpg,t08lib-real,#energyoptions #policy #politics,lreal,lib,real,bblueberryy,Emma Hanson,-263820000,0,0,0,0
+69f563d5d36d0896cb1286d6,7,15.jpg,t09con-real,Politicians discuss climate issues-,creal,con,real,BeardedMatt,Matthew McConville,-256800000,0,0,0,0
+69f563d0d36d0896cb128622,7,16.jpg,t09lib-real,Politicians discuss climate issues-,lreal,lib,real,BeardedMatt,Matthew McConville,-256800000,0,0,0,0
+69f563d5d36d0896cb1286d9,8,17.jpg,t10con-real,gender diversity or gender ideology in sports?,creal,con,real,BossmanRy,Ryan Haiskenen,-204300000,0,0,0,0
+69f563d0d36d0896cb128625,8,18.jpg,t10lib-real,gender diversity or gender ideology in sports?,lreal,lib,real,BossmanRy,Ryan Haiskenen,-204300000,0,0,0,0
+69f563d5d36d0896cb1286dc,9,19.jpg,t03con-real,#police in our communities,creal,con,real,breathe_in,Aimee Lin,-103440000,0,0,0,0
+69f563d0d36d0896cb128628,9,20.jpg,t03lib-real,#police in our communities,lreal,lib,real,breathe_in,Aimee Lin,-103440000,0,0,0,0
+69f563d5d36d0896cb1286df,10,21.jpg,t11con-real,affirmative action in college admissions,creal,con,real,breethebaker,Breanne Carman-Hines,-81600000,0,0,0,0
+69f563d0d36d0896cb12862b,10,22.jpg,t11lib-real,affirmative action in college admissions,lreal,lib,real,breethebaker,Breanne Carman-Hines,-81600000,0,0,0,0
+69f563d5d36d0896cb1286e2,11,23.jpg,t12con-real,#Vaccines,creal,con,real,casssssssssie,Cassie Reed,-69600000,0,0,0,0
+69f563d0d36d0896cb12862e,11,24.jpg,t12lib-real,#Vaccines,lreal,lib,real,casssssssssie,Cassie Reed,-69600000,0,0,0,0
+69f563d5d36d0896cb1286e5,12,25.jpg,t13con-real,"Robert F. Kennedy Jr., #vaccination",creal,con,real,cavsforever,Hiran,-352500000,0,0,0,0
+69f563d0d36d0896cb128631,12,26.jpg,t13lib-real,"Robert F. Kennedy Jr., #vaccination",lreal,lib,real,cavsforever,Hiran,-352500000,0,0,0,0
+69f563d5d36d0896cb1286e8,13,27.jpg,t14con-real,Science and Public Health,creal,con,real,coachmatthews,Eva Matthews,-345600000,0,0,0,0
+69f563d1d36d0896cb128634,13,28.jpg,t14lib-real,Science and Public Health,lreal,lib,real,coachmatthews,Eva Matthews,-345600000,0,0,0,0
+69f563d6d36d0896cb1286eb,14,29.jpg,t15con-real,News coverage of the Israel�Palestine war,creal,con,real,csmbx1,Suzanne,-340800000,0,0,0,0
+69f563d1d36d0896cb128637,14,30.jpg,t15lib-real,News coverage of the Israel�Palestine war,lreal,lib,real,csmbx1,Suzanne,-340800000,0,0,0,0
+69f563d6d36d0896cb1286ee,15,31.jpg,t16con-real,#protest about the Israel-Palestine war,creal,con,real,difrad,Dominic DiFranzo,-328800000,0,0,0,0
+69f563d1d36d0896cb12863a,15,32.jpg,t16lib-real,#protest about the Israel-Palestine war,lreal,lib,real,difrad,Dominic DiFranzo,-328800000,0,0,0,0
+69f563d6d36d0896cb1286f1,16,33.jpg,t17con-real,#Ukraine #War,creal,con,real,DonDonDonna,DonnaHAMMERSMITH,-260400000,0,0,0,0
+69f563d1d36d0896cb12863d,16,34.jpg,t17lib-real,#Ukraine #War,lreal,lib,real,DonDonDonna,DonnaHAMMERSMITH,-260400000,0,0,0,0
+69f563d6d36d0896cb1286f4,17,35.jpg,t18con-real,Are people becoming more politically violent in the US?,creal,con,real,earthpulse,Sophia P.,-283500000,0,0,0,0
+69f563d1d36d0896cb128640,17,36.jpg,t18lib-real,Are people becoming more politically violent in the US?,lreal,lib,real,earthpulse,Sophia P.,-283500000,0,0,0,0
+69f563d6d36d0896cb1286f7,18,37.jpg,t19con-real,#USprotests #transgenderrights,creal,con,real,EmmaSmith0214,Emma Smith,3540000,0,0,0,0
+69f563d1d36d0896cb128643,18,38.jpg,t19lib-real,#USprotests #transgenderrights,lreal,lib,real,EmmaSmith0214,Emma Smith,3540000,0,0,0,0
+69f563d6d36d0896cb1286fa,19,39.jpg,t20con-real,US President talks #trade and #tarrifs,creal,con,real,fgonzalez,MomFiona,-221100000,0,0,0,0
+69f563d1d36d0896cb128646,19,40.jpg,t20lib-real,US President talks #trade and #tarrifs,lreal,lib,real,fgonzalez,MomFiona,-221100000,0,0,0,0
+69f563d6d36d0896cb1286fd,20,41.jpg,t21con-real,Do tariffs HELP factories or HURT consumers?,creal,con,real,fusionfeast,Max Cho,-160440000,0,0,0,0
+69f563d1d36d0896cb128649,20,42.jpg,t21lib-real,Do tariffs HELP factories or HURT consumers?,lreal,lib,real,fusionfeast,Max Cho,-160440000,0,0,0,0
+69f563d6d36d0896cb128700,21,43.jpg,t22con-real,diversity in education?,creal,con,real,gwenfromtheblock,GwenfromtheBlock,-144000000,0,0,0,0
+69f563d1d36d0896cb12864c,21,44.jpg,t22lib-real,diversity in education?,lreal,lib,real,gwenfromtheblock,GwenfromtheBlock,-144000000,0,0,0,0
+69f563d6d36d0896cb128703,22,45.jpg,t23con-real,U.S. Healthcare: budget buster or basic right?,creal,con,real,hockeymom101,Tracey Green,-88200000,0,0,0,0
+69f563d1d36d0896cb12864f,22,46.jpg,t23lib-real,U.S. Healthcare: budget buster or basic right?,lreal,lib,real,hockeymom101,Tracey Green,-88200000,0,0,0,0
+69f563d6d36d0896cb128706,23,47.jpg,t24con-real,National guard deployment in D.C.,creal,con,real,HP743,Heather,-74460000,0,0,0,0
+69f563d1d36d0896cb128652,23,48.jpg,t24lib-real,National guard deployment in D.C.,lreal,lib,real,HP743,Heather,-74460000,0,0,0,0
+69f563d6d36d0896cb128709,24,49.jpg,t25con-real,Does diversity in the US military make it strong or weak?,creal,con,real,jackrussellmom,Karen Laretti,-6000000,0,0,0,0
+69f563d1d36d0896cb128655,24,50.jpg,t25lib-real,Does diversity in the US military make it strong or weak?,lreal,lib,real,jackrussellmom,Karen Laretti,-6000000,0,0,0,0
+69f563d6d36d0896cb12870c,25,51.jpg,t26con-real,is #scotus an objective institution or a collection of ideological judicial activists?,creal,con,real,jake_turk,Jake T.,-355500000,0,0,0,0
+69f563d2d36d0896cb128658,25,52.jpg,t26lib-real,is #scotus an objective institution or a collection of ideological judicial activists?,lreal,lib,real,jake_turk,Jake T.,-355500000,0,0,0,0
+69f563d6d36d0896cb12870f,26,53.jpg,t27con-real,speech on campus #freedom,creal,con,real,Jcole9,jcole,-272340000,0,0,0,0
+69f563d2d36d0896cb12865b,26,54.jpg,t27lib-real,speech on campus #freedom,lreal,lib,real,Jcole9,jcole,-272340000,0,0,0,0
+69f563d7d36d0896cb128712,27,55.jpg,t28con-real,US colleges and universities #highered,creal,con,real,jiruletheworld,Jin Ying,-258900000,0,0,0,0
+69f563d2d36d0896cb12865e,27,56.jpg,t28lib-real,US colleges and universities #highered,lreal,lib,real,jiruletheworld,Jin Ying,-258900000,0,0,0,0
+69f563d7d36d0896cb128715,28,1.jpg,t01con-ai.png,guns in America...,cAI,con,AI,_aikira_,Aikira Walker,-74100000,0,0,0,0
+69f563d7d36d0896cb128718,29,3.jpg,t02con-ai.png,#guns #safety,cAI,con,AI,ancho-n-cayenne,Yalonda Carter,-40380000,0,0,0,0
+69f563d2d36d0896cb128661,29,58.jpg,t29lib-real,#war #iran,lreal,lib,real,john73,John,-119040000,0,0,0,0
+69f563d7d36d0896cb12871b,30,5.jpg,t04con-ai.png,#abortion #protest has taken place across the country,cAI,con,AI,artisanalways,Riya,2700000,0,0,0,0
+69f563d7d36d0896cb12871e,31,7.jpg,t05con-ai.png,Is #abortion about #bodyautonomy OR #sanctityoflife?,cAI,con,AI,Ataylor,Ataylor,-350160000,0,0,0,0
+69f563d2d36d0896cb128664,31,60.jpg,t30lib-real,Celebration or Protest? #iranwar,lreal,lib,real,JuniperQ,JuniperQ,-324480000,0,0,0,0
+69f563d7d36d0896cb128721,32,9.jpg,t06con-ai.png,Immigration at the Border,cAI,con,AI,ayoitsayo,Maui Ayo,-334800000,0,0,0,0
+69f563d7d36d0896cb128724,33,11.jpg,t07con-ai.png,Immigration and Customs Enforcement #ICE at Work,cAI,con,AI,B.Mike,Mike B.,-273840000,0,0,0,0
+69f563d7d36d0896cb128727,34,13.jpg,t08con-ai.png,#energyoptions #policy #politics,cAI,con,AI,bblueberryy,Emma Hanson,-263820000,0,0,0,0
+69f563d7d36d0896cb12872a,35,15.jpg,t09con-ai.png,Politicians discuss climate issues-,cAI,con,AI,BeardedMatt,Matthew McConville,-256800000,0,0,0,0
+69f563d2d36d0896cb128667,35,2.jpg,t01lib-ai.png,guns in America...,lAI,lib,AI,_aikira_,Aikira Walker,-74100000,0,0,0,0
+69f563d7d36d0896cb12872d,36,17.jpg,t10con-ai.png,gender diversity or gender ideology in sports?,cAI,con,AI,BossmanRy,Ryan Haiskenen,-204300000,0,0,0,0
+69f563d2d36d0896cb12866a,36,4.jpg,t02lib-ai.png,#guns #safety,lAI,lib,AI,ancho-n-cayenne,Yalonda Carter,-40380000,0,0,0,0
+69f563d7d36d0896cb128730,37,19.jpg,t03con-ai.png,#police in our communities,cAI,con,AI,breathe_in,Aimee Lin,-103440000,0,0,0,0
+69f563d2d36d0896cb12866d,37,6.jpg,t04lib-ai.png,#abortion #protest has taken place across the country,lAI,lib,AI,artisanalways,Riya,2700000,0,0,0,0
+69f563d7d36d0896cb128733,38,21.jpg,t11con-ai.png,affirmative action in college admissions,cAI,con,AI,breethebaker,Breanne Carman-Hines,-81600000,0,0,0,0
+69f563d2d36d0896cb128670,38,8.jpg,t05lib-ai.png,Is #abortion about #bodyautonomy OR #sanctityoflife?,lAI,lib,AI,Ataylor,Ataylor,-350160000,0,0,0,0
+69f563d8d36d0896cb128736,39,23.jpg,t12con-ai.png,#Vaccines,cAI,con,AI,casssssssssie,Cassie Reed,-69600000,0,0,0,0
+69f563d2d36d0896cb128673,39,10.jpg,t06lib-ai.png,Immigration at the Border,lAI,lib,AI,ayoitsayo,Maui Ayo,-334800000,0,0,0,0
+69f563d8d36d0896cb128739,40,25.jpg,t13con-ai.png,"Robert F. Kennedy Jr., #vaccination",cAI,con,AI,cavsforever,Hiran,-352500000,0,0,0,0
+69f563d2d36d0896cb128676,40,12.jpg,t07lib-ai.png,Immigration and Customs Enforcement #ICE at Work,lAI,lib,AI,B.Mike,Mike B.,-273840000,0,0,0,0
+69f563d8d36d0896cb12873c,41,27.jpg,t14con-ai.png,Science and Public Health,cAI,con,AI,coachmatthews,Eva Matthews,-345600000,0,0,0,0
+69f563d2d36d0896cb128679,41,14.jpg,t08lib-ai.png,#energyoptions #policy #politics,lAI,lib,AI,bblueberryy,Emma Hanson,-263820000,0,0,0,0
+69f563d8d36d0896cb12873f,42,29.jpg,t15con-ai.png,News coverage of the Israel�Palestine war,cAI,con,AI,csmbx1,Suzanne,-340800000,0,0,0,0
+69f563d2d36d0896cb12867c,42,16.jpg,t09lib-ai.png,Politicians discuss climate issues-,lAI,lib,AI,BeardedMatt,Matthew McConville,-256800000,0,0,0,0
+69f563d8d36d0896cb128742,43,31.jpg,t16con-ai.png,#protest about the Israel-Palestine war,cAI,con,AI,difrad,Dominic DiFranzo,-328800000,0,0,0,0
+69f563d3d36d0896cb12867f,43,18.jpg,t10lib-ai.png,gender diversity or gender ideology in sports?,lAI,lib,AI,BossmanRy,Ryan Haiskenen,-204300000,0,0,0,0
+69f563d8d36d0896cb128745,44,33.jpg,t17con-ai.png,#Ukraine #War,cAI,con,AI,DonDonDonna,DonnaHAMMERSMITH,-260400000,0,0,0,0
+69f563d3d36d0896cb128682,44,20.jpg,t03lib-ai.png,#police in our communities,lAI,lib,AI,breathe_in,Aimee Lin,-103440000,0,0,0,0
+69f563d8d36d0896cb128748,45,35.jpg,t18con-ai.png,Are people becoming more politically violent in the US?,cAI,con,AI,earthpulse,Sophia P.,-283500000,0,0,0,0
+69f563d3d36d0896cb128685,45,22.jpg,t11lib-ai.png,affirmative action in college admissions,lAI,lib,AI,breethebaker,Breanne Carman-Hines,-81600000,0,0,0,0
+69f563d8d36d0896cb12874b,46,37.jpg,t19con-ai.png,#USprotests #transgenderrights,cAI,con,AI,EmmaSmith0214,Emma Smith,3540000,0,0,0,0
+69f563d3d36d0896cb128688,46,24.jpg,t12lib-ai.png,#Vaccines,lAI,lib,AI,casssssssssie,Cassie Reed,-69600000,0,0,0,0
+69f563d8d36d0896cb12874e,47,39.jpg,t20con-ai.png,US President talks #trade and #tarrifs,cAI,con,AI,fgonzalez,MomFiona,-221100000,0,0,0,0
+69f563d3d36d0896cb12868b,47,26.jpg,t13lib-ai.png,"Robert F. Kennedy Jr., #vaccination",lAI,lib,AI,cavsforever,Hiran,-352500000,0,0,0,0
+69f563d8d36d0896cb128751,48,41.jpg,t21con-ai.png,Do tariffs HELP factories or HURT consumers?,cAI,con,AI,fusionfeast,Max Cho,-160440000,0,0,0,0
+69f563d3d36d0896cb12868e,48,28.jpg,t14lib-ai.png,Science and Public Health,lAI,lib,AI,coachmatthews,Eva Matthews,-345600000,0,0,0,0
+69f563d8d36d0896cb128754,49,43.jpg,t22con-ai.png,diversity in education?,cAI,con,AI,gwenfromtheblock,GwenfromtheBlock,-144000000,0,0,0,0
+69f563d3d36d0896cb128691,49,30.jpg,t15lib-ai.png,News coverage of the Israel�Palestine war,lAI,lib,AI,csmbx1,Suzanne,-340800000,0,0,0,0
+69f563d8d36d0896cb128757,50,45.jpg,t23con-ai.png,U.S. Healthcare: budget buster or basic right?,cAI,con,AI,hockeymom101,Tracey Green,-88200000,0,0,0,0
+69f563d3d36d0896cb128694,50,32.jpg,t16lib-ai.png,#protest about the Israel-Palestine war,lAI,lib,AI,difrad,Dominic DiFranzo,-328800000,0,0,0,0
+69f563d9d36d0896cb12875a,51,47.jpg,t24con-ai.png,National guard deployment in D.C.,cAI,con,AI,HP743,Heather,-74460000,0,0,0,0
+69f563d3d36d0896cb128697,51,34.jpg,t17lib-ai.png,#Ukraine #War,lAI,lib,AI,DonDonDonna,DonnaHAMMERSMITH,-260400000,0,0,0,0
+69f563d9d36d0896cb12875d,52,49.jpg,t25con-ai.png,Does diversity in the US military make it strong or weak?,cAI,con,AI,jackrussellmom,Karen Laretti,-6000000,0,0,0,0
+69f563d3d36d0896cb12869a,52,36.jpg,t18lib-ai.png,Are people becoming more politically violent in the US?,lAI,lib,AI,earthpulse,Sophia P.,-283500000,0,0,0,0
+69f563d9d36d0896cb128760,53,51.jpg,t26con-ai.png,is #scotus an objective institution or a collection of ideological judicial activists?,cAI,con,AI,jake_turk,Jake T.,-355500000,0,0,0,0
+69f563d3d36d0896cb12869d,53,38.jpg,t19lib-ai.png,#USprotests #transgenderrights,lAI,lib,AI,EmmaSmith0214,Emma Smith,3540000,0,0,0,0
+69f563d9d36d0896cb128763,54,53.jpg,t27con-ai.png,speech on campus #freedom,cAI,con,AI,Jcole9,jcole,-272340000,0,0,0,0
+69f563d3d36d0896cb1286a0,54,40.jpg,t20lib-ai.png,US President talks #trade and #tarrifs,lAI,lib,AI,fgonzalez,MomFiona,-221100000,0,0,0,0
+69f563d9d36d0896cb128766,55,55.jpg,t28con-ai.png,US colleges and universities #highered,cAI,con,AI,jiruletheworld,Jin Ying,-258900000,0,0,0,0
+69f563d4d36d0896cb1286a3,55,42.jpg,t21lib-ai.png,Do tariffs HELP factories or HURT consumers?,lAI,lib,AI,fusionfeast,Max Cho,-160440000,0,0,0,0
+69f563d4d36d0896cb1286a6,56,44.jpg,t22lib-ai.png,diversity in education?,lAI,lib,AI,gwenfromtheblock,GwenfromtheBlock,-144000000,0,0,0,0
+69f563d4d36d0896cb1286a9,57,46.jpg,t23lib-ai.png,U.S. Healthcare: budget buster or basic right?,lAI,lib,AI,hockeymom101,Tracey Green,-88200000,0,0,0,0
+69f563d4d36d0896cb1286ac,58,48.jpg,t24lib-ai.png,National guard deployment in D.C.,lAI,lib,AI,HP743,Heather,-74460000,0,0,0,0
+69f563d4d36d0896cb1286af,59,50.jpg,t25lib-ai.png,Does diversity in the US military make it strong or weak?,lAI,lib,AI,jackrussellmom,Karen Laretti,-6000000,0,0,0,0
+69f563d4d36d0896cb1286b2,60,52.jpg,t26lib-ai.png,is #scotus an objective institution or a collection of ideological judicial activists?,lAI,lib,AI,jake_turk,Jake T.,-355500000,0,0,0,0
+69f563d4d36d0896cb1286b5,61,54.jpg,t27lib-ai.png,speech on campus #freedom,lAI,lib,AI,Jcole9,jcole,-272340000,0,0,0,0
+69f563d4d36d0896cb1286b8,62,56.jpg,t28lib-ai.png,US colleges and universities #highered,lAI,lib,AI,jiruletheworld,Jin Ying,-258900000,0,0,0,0
+69f563d9d36d0896cb128769,63,57.jpg,t29con-ai.png,#war #iran,cAI,con,AI,john73,John,-258900000,0,0,0,0
+69f563d9d36d0896cb12876f,63,57.jpg,t29con-real,#war #iran,creal,con,real,john73,John,-258900000,0,0,0,0
+69f563d4d36d0896cb1286bb,63,58.jpg,t29lib-ai.png,#war #iran,lAI,lib,AI,john73,John,-258900000,0,0,0,0
+69f563d9d36d0896cb12876c,64,59.jpg,t30con-ai.png,Celebration or Protest? #iranwar,cAI,con,AI,JuniperQ,JuniperQ,-258900000,0,0,0,0
+69f563d9d36d0896cb128772,64,59.jpg,t30con-real,Celebration or Protest? #iranwar,creal,con,real,JuniperQ,JuniperQ,-258900000,0,0,0,0
+69f563d4d36d0896cb1286be,64,60.jpg,t30lib-ai.png,Celebration or Protest? #iranwar,lAI,lib,AI,JuniperQ,JuniperQ,-258900000,0,0,0,0

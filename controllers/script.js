@@ -45,6 +45,111 @@ async function getOrCreateFeedOrder(groupId, script_feed) {
     }
     return order[groupId];
 }
+
+/**
+ * Atomically create one feedAction for a user/post pair. The query condition is
+ * re-checked by MongoDB when concurrent requests arrive, so only one request
+ * can append the subdocument and every request then reuses that same entry.
+ */
+async function ensureSingleFeedAction(userId, postId, postClass) {
+    await User.updateOne(
+        { _id: userId, 'feedAction.post': { $ne: postId } },
+        { $push: { feedAction: { post: postId, postClass } } }
+    ).exec();
+
+    const user = await User.findById(userId).exec();
+    const feedIndex = _.findIndex(user.feedAction, function (feedAction) {
+        return feedAction.post && String(feedAction.post) === String(postId);
+    });
+
+    if (feedIndex === -1) {
+        throw new Error(`Unable to create feedAction for post ${postId}`);
+    }
+
+    return { user, feedIndex };
+}
+
+/**
+ * Record actor-post actions with one atomic MongoDB update. This prevents two
+ * simultaneous browser requests from overwriting one another after the shared
+ * feedAction has been created.
+ */
+async function updateActorPostAction(userId, postId, body) {
+    let update = null;
+
+    if (body.share) {
+        update = {
+            $push: { 'feedAction.$.shareTime': body.share },
+            $set: { 'feedAction.$.shared': true },
+            $inc: { numPostShared: 1 },
+        };
+    } else if (body.unshare) {
+        update = {
+            $push: { 'feedAction.$.unshareTime': body.unshare },
+            $set: { 'feedAction.$.shared': false },
+            $inc: { numPostShared: -1 },
+        };
+    } else if (body.flag) {
+        update = {
+            $set: {
+                'feedAction.$.flagTime': [body.flag],
+                'feedAction.$.flagged': true,
+            },
+        };
+    } else if (body.like) {
+        update = {
+            $push: { 'feedAction.$.likeTime': body.like },
+            $set: {
+                'feedAction.$.liked': true,
+                'feedAction.$.disliked': false,
+            },
+            $inc: { numPostLikes: 1 },
+        };
+    } else if (body.unlike) {
+        update = {
+            $push: { 'feedAction.$.unlikeTime': body.unlike },
+            $set: { 'feedAction.$.liked': false },
+            $inc: { numPostLikes: -1 },
+        };
+    } else if (body.dislike) {
+        update = {
+            $push: { 'feedAction.$.dislikeTime': body.dislike },
+            $set: {
+                'feedAction.$.disliked': true,
+                'feedAction.$.liked': false,
+            },
+            $inc: { numPostDisLikes: 1 },
+        };
+    } else if (body.undislike) {
+        update = {
+            $push: { 'feedAction.$.undislikeTime': body.undislike },
+            $set: { 'feedAction.$.disliked': false },
+            $inc: { numPostDisLikes: -1 },
+        };
+    } else if (body.viewed) {
+        const view = Number(body.viewed);
+        if (Number.isFinite(view) && view < 86400000 && view > 1500) {
+            update = {
+                $push: { 'feedAction.$.readTime': Math.round(view) },
+                $inc: { 'feedAction.$.rereadTimes': 1 },
+                $set: { 'feedAction.$.mostRecentTime': new Date() },
+            };
+        }
+    }
+
+    if (!update) return false;
+
+    const result = await User.updateOne(
+        { _id: userId, 'feedAction.post': postId },
+        update
+    ).exec();
+
+    if (result.matchedCount !== 1) {
+        throw new Error(`Unable to update feedAction for post ${postId}`);
+    }
+
+    return true;
+}
 // 更新后的 26 个 Token 顺序
 const FEED_ORDER_TOKENS = [
     "T30", "T2", "T15", "T21", "T4", "T8", "T29", "T13", "T11", "T3", 
@@ -423,32 +528,27 @@ exports.postUpdateFeedActionNoLOGIN = async (req, res, next) => {
     try {
 
         const prolificID = req.query.UID;
-        console.log('Request Query:', req.query);
-        console.log('Request Body:', req.body);
         if (!prolificID) {
             return res.status(400).send('Prolific ID is required');
+        }
+        if (!req.body.postID) {
+            return res.status(400).send('Post ID is required');
         }
 
 
         // Find the user by prolificID
-        const user = await User.findOne({ prolificID: prolificID }).exec();
-        console.log('User found:', user); // Debugging: log the user
+        let user = await User.findOne({ prolificID: prolificID }).exec();
         if (!user) {
             return res.status(404).send('User not found for this UID');
         }
-        // Check if user has interacted with the post before.
-        let feedIndex = _.findIndex(user.feedAction, function (o) {
-            return o.post && String(o.post) === String(req.body.postID);
-        });
 
-        // If the user has not interacted with the post before, add the post to user.feedAction.
-        if (feedIndex == -1) {
-            const cat = {
-                post: req.body.postID,
-                postClass: req.body.postClass,
-            };
-            feedIndex = user.feedAction.push(cat) - 1;
-        }
+        const ensuredFeedAction = await ensureSingleFeedAction(
+            user._id,
+            req.body.postID,
+            req.body.postClass
+        );
+        user = ensuredFeedAction.user;
+        const feedIndex = ensuredFeedAction.feedIndex;
 
         // User created a new comment on the post.
         if (req.body.new_comment) {
@@ -510,69 +610,8 @@ exports.postUpdateFeedActionNoLOGIN = async (req, res, next) => {
         }
         // User interacted with the post.
         else {
-            // User shared the post.
-            if (req.body.share) {
-                const share = req.body.share;
-                user.feedAction[feedIndex].shareTime.push(share);
-                user.feedAction[feedIndex].shared = true;
-                user.numPostShared++;
-            }
-            // User unshared the post.
-            else if (req.body.unshare) {
-                const unshare = req.body.unshare;
-                user.feedAction[feedIndex].unshareTime.push(unshare);
-                user.feedAction[feedIndex].shared = false;
-                user.numPostShared--;
-            }
-            // User flagged the post.
-            else if (req.body.flag) {
-                const flag = req.body.flag;
-                user.feedAction[feedIndex].flagTime = [flag];
-                user.feedAction[feedIndex].flagged = true;
-            }
-
-            // User liked the post.
-            else if (req.body.like) {
-                const like = req.body.like;
-                user.feedAction[feedIndex].likeTime.push(like);
-                user.feedAction[feedIndex].liked = true;
-                user.numPostLikes++;
-            }
-            // User unliked the post.
-            else if (req.body.unlike) {
-                const unlike = req.body.unlike;
-                user.feedAction[feedIndex].unlikeTime.push(unlike);
-                user.feedAction[feedIndex].liked = false;
-                user.numPostLikes--;
-            } // user dislike the post 
-            else if (req.body.dislike) {
-                console.log("HIT DISLIKE BRANCH", req.body.postID);
-                console.log("before push:", user.feedAction[feedIndex].dislikeTime);
-                const dislike = req.body.dislike;
-                user.feedAction[feedIndex].dislikeTime.push(dislike);
-                user.feedAction[feedIndex].disliked = true;
-                user.numPostDisLikes++;
-            }
-            // User undisliked the post.
-            else if (req.body.undislike) {
-                console.log("HIT DISLIKE BRANCH", req.body.postID);
-                console.log("before push:", user.feedAction[feedIndex].dislikeTime);
-                const undislike = req.body.undislike;
-                user.feedAction[feedIndex].undislikeTime.push(undislike);
-                user.feedAction[feedIndex].disliked = false;
-                user.numPostDisLikes--;
-            }
-            // User read the post.
-            else if (req.body.viewed) {
-                const view = Number(req.body.viewed);
-                if (Number.isFinite(view) && view < 86400000 && view > 1500) {
-                    user.feedAction[feedIndex].readTime.push(Math.round(view));
-                    user.feedAction[feedIndex].rereadTimes++;
-                    user.feedAction[feedIndex].mostRecentTime = Date.now();
-                }
-            } else {
-                console.log('Something in feedAction went crazy. You should never see this.');
-            }
+            await updateActorPostAction(user._id, req.body.postID, req.body);
+            return res.send({ result: "success", numComments: user.numComments });
         }
         await user.save();
         res.send({ result: "success", numComments: user.numComments });
@@ -701,20 +740,17 @@ exports.newPost = async (req, res) => {
  */
 exports.postUpdateFeedAction = async (req, res, next) => {
     try {
-        const user = await User.findById(req.user.id).exec();
-        // Check if user has interacted with the post before.
-        let feedIndex = _.findIndex(user.feedAction, function (o) {
-            return o.post && String(o.post) === String(req.body.postID);
-        });
-
-        // If the user has not interacted with the post before, add the post to user.feedAction.
-        if (feedIndex == -1) {
-            const cat = {
-                post: req.body.postID,
-                postClass: req.body.postClass,
-            };
-            feedIndex = user.feedAction.push(cat) - 1;
+        if (!req.body.postID) {
+            return res.status(400).send('Post ID is required');
         }
+
+        const ensuredFeedAction = await ensureSingleFeedAction(
+            req.user.id,
+            req.body.postID,
+            req.body.postClass
+        );
+        const user = ensuredFeedAction.user;
+        const feedIndex = ensuredFeedAction.feedIndex;
 
         // User created a new comment on the post.
         if (req.body.new_comment) {
@@ -776,59 +812,8 @@ exports.postUpdateFeedAction = async (req, res, next) => {
         }
         // User interacted with the post.
         else {
-            // User flagged the post.
-            if (req.body.share) {
-                const share = req.body.share;
-                user.feedAction[feedIndex].shareTime.push(share);
-                user.feedAction[feedIndex].shared = true;
-                user.numPostShared++;
-            }
-            // if user undo the share 
-            else if (req.body.unshare) {
-                const unshare = req.body.unshare;
-                user.feedAction[feedIndex].unshareTime.push(unshare);
-                user.feedAction[feedIndex].shared = false;
-                user.numPostShared--;
-            }
-            // User liked the post.
-            else if (req.body.like) {
-                const like = req.body.like;
-                user.feedAction[feedIndex].likeTime.push(like);
-                user.feedAction[feedIndex].liked = true;
-                user.numPostLikes++;
-            }
-            // User unliked the post.
-            else if (req.body.unlike) {
-                const unlike = req.body.unlike;
-                user.feedAction[feedIndex].unlikeTime.push(unlike);
-                user.feedAction[feedIndex].liked = false;
-                user.numPostLikes--;
-            }
-            // User disliked the post.
-            else if (req.body.dislike) {
-                const dislike = req.body.dislike;
-                user.feedAction[feedIndex].dislikeTime.push(dislike);
-                user.feedAction[feedIndex].disliked = true;
-                user.numPostDisLikes++;
-            }
-            // User undisliked the post.
-            else if (req.body.undislike) {
-                const undislike = req.body.undislike;
-                user.feedAction[feedIndex].undislikeTime.push(undislike);
-                user.feedAction[feedIndex].disliked = false;
-                user.numPostDisLikes--;
-            }
-            // User read the post.
-            else if (req.body.viewed) {
-                const view = Number(req.body.viewed);
-                if (Number.isFinite(view) && view < 86400000 && view > 1500) {
-                    user.feedAction[feedIndex].readTime.push(Math.round(view));
-                    user.feedAction[feedIndex].rereadTimes++;
-                    user.feedAction[feedIndex].mostRecentTime = Date.now();
-                }
-            } else {
-                console.log('Something in feedAction went crazy. You should never see this.');
-            }
+            await updateActorPostAction(user._id, req.body.postID, req.body);
+            return res.send({ result: "success", numComments: user.numComments });
         }
         await user.save();
         res.send({ result: "success", numComments: user.numComments });

@@ -11,6 +11,8 @@
     "scripts": {
         "dev": "nodemon app.js",
         "start": "node app.js",
+        "audit:duplicates": "node audit-duplicate-feedactions.js",
+        "export:scripts": "node export-scripts.js",
         "test": "mocha --reporter spec"
     },
     "dependencies": {
